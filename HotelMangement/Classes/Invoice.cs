@@ -8,5 +8,11 @@ namespace HotelMangement.Classes
 {
    public class Invoice
     {
+
+        public enum InvoiceStatus
+        {
+            paid,
+            notPaid
+        }
     }
 }
