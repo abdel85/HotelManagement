@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using static HotelMangement.Classes.Invoice;
 
@@ -29,6 +30,7 @@ namespace HotelMangement.Classes
             Code = Guid.NewGuid().ToString();
         }
 
+        #region bookin method
         public Booking(string code)
         {
             command = new SqlCommand("SELECT *FROM Booking WHERE Code = @c", Connection.Instance);
@@ -44,17 +46,23 @@ namespace HotelMangement.Classes
                 OccupatedNumber = reader.GetInt32(4);
                 Status = (BookingStatus)reader.GetInt32(5);
                 StatusInvoice = (InvoiceStatus)reader.GetInt32(6);
- 
+
             }
             reader.Close();
             command.Dispose();
             Connection.Instance.Close();
         }
 
+
+
+        #endregion
+
+        #region save method
+
         public bool Save()
         {
             bool result = false;
-            command = new SqlCommand("INSERT INTO Booking(Code,CustomerId,RoomId,OccupatedNumber,Status) OUTPUT INSERTED.ID values(@c,@cu,@r,@o,@s)",Connection.Instance);
+            command = new SqlCommand("INSERT INTO Booking(Code,CustomerId,RoomId,OccupatedNumber,Status) OUTPUT INSERTED.ID values(@c,@cu,@r,@o,@s)", Connection.Instance);
             command.Parameters.Add(new SqlParameter("@c", Code));
             command.Parameters.Add(new SqlParameter("@cu", CustomerId));
             command.Parameters.Add(new SqlParameter("@r", RoomId));
@@ -62,11 +70,78 @@ namespace HotelMangement.Classes
             command.Parameters.Add(new SqlParameter("@s", Status));
 
             Connection.Instance.Open();
-            Id = (int) command.ExecuteScalar();
+            Id = (int)command.ExecuteScalar();
             command.Dispose();
             Connection.Instance.Close();
             result = (Id > 0);
             return result;
+
+        }
+
+        #endregion
+
+        #region UodateStatus Method
+
+        public bool UpdateStatus(BookingStatus s)
+        {
+            bool result = false;
+            command = new SqlCommand("UPDATE Booking SET Status =@sWHERE Id = @i", Connection.Instance);
+            command.Parameters.Add(new SqlParameter("@s", s));
+            command.Parameters.Add(new SqlParameter("@i", Id));
+            Connection.Instance.Open();
+            result = command.ExecuteNonQuery() > 0;
+            command.Dispose();
+            Connection.Instance.Close();
+         
+            return result;
+        }
+
+
+        #endregion
+
+        #region GetBooking Method
+
+        public static List<Booking> GetBookings(int customerId)
+        {
+            List<Booking> result = new List<Booking>();
+            command = new SqlCommand("SELECT * FROM CustomerId = @c", Connection.Instance);
+            command.Parameters.Add(new SqlParameter("@c", customerId));
+            Connection.Instance.Open();
+            SqlDataReader reader = command.EndExecuteReader();
+
+            while (reader.Read())
+            {
+                Booking b = new Booking()
+                {
+                    Id = reader.GetInt32(0),
+                    Code = reader.GetString(1),
+                    CustomerId = reader.GetInt32(2),
+                    RoomId = reader.GetInt32(3),
+                    OccupatedNumber = reader.GetInt32(4),
+                    status = (BookingStatus)reader.GetInt32(5)
+                };
+                result.Add(b);
+            }
+            reader.Close();
+            command.Dispose();
+            Connection.Instance.Close();
+
+
+
+            return result;
+        }
+
+        #endregion
+
+
+        public override string ToString()
+        {
+            string result = "Code" + Code;
+            result += "Status" + Status;
+            result += "CustomerId : " + CustomerId;
+            result += $"paiment status : {StatusInvoice}" ;
+            return result;
+
 
         }
         public enum BookingStatus
