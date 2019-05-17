@@ -142,7 +142,7 @@ namespace HotelMangement.Classes
             result += $"paiment status : {StatusInvoice}" ;
             return result;
 
-
+             
         }
         public enum BookingStatus
         {
