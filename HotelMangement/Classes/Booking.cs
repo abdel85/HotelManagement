@@ -75,7 +75,7 @@ namespace HotelMangement.Classes
             Validated
         }
 
-
+         
         
     }
 
