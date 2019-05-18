@@ -23,7 +23,7 @@ namespace HotelMangement.Classes
         public int RoomId { get => roomId; set => roomId = value; }
         public int OccupatedNumber { get => occupatedNumber; set => occupatedNumber = value; }
         public BookingStatus Status { get => status; set => status = value; }
-        public InvoiceStatus statusInvoice { get => statusInvoice; set => statusInvoice = value; }
+        public InvoiceStatus StatusInvoice { get => statusInvoice; set => statusInvoice = value; }
 
         public Booking()
         {
@@ -107,7 +107,7 @@ namespace HotelMangement.Classes
             command = new SqlCommand("SELECT * FROM CustomerId = @c", Connection.Instance);
             command.Parameters.Add(new SqlParameter("@c", customerId));
             Connection.Instance.Open();
-            SqlDataReader reader = command.EndExecuteReader();
+            SqlDataReader reader = command.ExecuteReader();
 
             while (reader.Read())
             {
