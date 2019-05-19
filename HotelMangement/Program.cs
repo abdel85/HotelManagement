@@ -33,7 +33,7 @@ namespace HotelMangement
                     switch (choice)
                     {
                         case 1:
-                            GetCostumer();
+                            GetCustomers();
                             break;
                         case 2:
                             GetBooking();
@@ -149,7 +149,7 @@ namespace HotelMangement
                 Console.WriteLine("No custome found");
             }
 
-            CustomerMenu();
+            CustomersMenu();
         }
 
         public void CustomerMenu()
@@ -256,7 +256,7 @@ namespace HotelMangement
             #endregion
         }
 
-        static public void Paid(int idCustomer, decimal total, List<Booking> bs)
+        static  void Paid(int idCustomer, decimal total, List<Booking> bs)
         {
             Invoice i = new Invoice()
             {    Price =  total,
@@ -269,14 +269,147 @@ namespace HotelMangement
             {
                 foreach (Booking b in bs)
                 {
-                    b.UpdateStatus(Invoice.InvoiceStatus.paid);
+                    b.UpdateStatus(InvoiceStatus.paid);
                 }
             }
-
         }
-        static public  void AddBooking()
-        {
 
+
+        static   void AddBooking()
+        {
+            Console.WriteLine("Customer Phone :");
+            string phone = Console.ReadLine();
+            Customer c = new Customer();
+            if (c.Id > 0)
+            {
+                if (Room.GetRoomByStatus(Room.RoomStatus.Free).Count > 0)
+                {
+                    foreach (Room r in Room.GetRoomByStatus(Room.RoomStatus.Free))
+                    {
+                        Console.WriteLine(r);
+                        Console.WriteLine("----------------");
+                    }
+
+                    int number;
+                    do
+                    {
+                        Console.WriteLine("How many people? : ");
+                        Int32.TryParse(Console.ReadLine(), out number);
+                    } while (number == 0);
+
+                    do
+                    {
+                        Console.WriteLine("Room's number");
+                        int n = Convert.ToInt32(Console.ReadLine());
+                        Room room = Room.GetRoomByStatus(Room.RoomStatus.Free).Find(x => x.Number == n);
+                        Booking b = new Booking()
+                        {
+                            CustomerId = c.Id,
+                            RoomId = room.Id,
+                            OccupatedNumber = (number > room.OccupatedMax) ? room.OccupatedMax : number,
+                            Status = Booking.BookingStatus.Validated
+                        };
+
+                        if (b.Save())
+                        {
+                            room.UpdateStatus(Room.RoomStatus.Busy);
+                            number -= room.OccupatedMax;
+                        }
+
+                    }
+                    while (number > 0);
+                }
+                else
+                {
+                    Console.WriteLine(" No free room available");
+                }
+            }
+                else
+                {
+                    Console.WriteLine("Customer not found");
+                }
+
+
+            }
+
+        static void GetBooking()
+        {
+            Console.Clear();
+            List<Booking> list = Booking.GetBookingsByHotelId(hotel.Id);
+            if (list.Count > 0)
+            {
+                foreach (Booking b in list)
+                {
+                    Console.WriteLine(b);
+                    Room r = new Room(b.RoomId);
+                    Console.WriteLine(r);
+                    Customer c = new Customer(b.CustomerId);
+                    Console.WriteLine(c);
+                    Console.WriteLine("----------------------");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No booking foud for this hotel");
+            }
+
+            BookingMenu();
+        }
+
+        static void BookingMenu()
+        {
+            int choice = 4;
+            do
+            {
+                Console.WriteLine("1-New  Booking");
+                Console.WriteLine("2-Change status");
+                 Console.WriteLine("0-Exit");
+                try
+                {
+                    choice = Convert.ToInt32(Console.ReadLine());
+                    switch (choice)
+                    {
+                        case 1:
+                            AddBooking();();
+                            break;
+                        case 2:
+                            ChangeBookingStatus();
+                            break;
+                     
+                    }
+                }
+                catch (Exception c)
+                {
+                    Console.WriteLine(c.Message);
+
+                }
+            }
+            while (choice != 0);
+        }
+
+          static void ChangeBookingStatus()
+        {
+            Console.WriteLine("Booking Code: ");
+            string code = Console.ReadLine();
+            Booking b = new Booking(code);
+            if (b.Id > 0)
+            {
+                if (b.Status == Booking.BookingStatus.Cancelled)
+                {
+                    b.UpdateStatus(Booking.BookingStatus.Cancelled);
+                    Room r = new Room(b.RoomId);
+                    r.UpdateStatus(Room.RoomStatus.Free)
+
+                }
+
+                Console.WriteLine("Status Updated");
+            }
+            else
+            {
+                Console.WriteLine("No Booking found");
+            }
         }
     }
-}
+
+    }
+
