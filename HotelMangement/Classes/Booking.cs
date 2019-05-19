@@ -133,6 +133,35 @@ namespace HotelMangement.Classes
 
         #endregion
 
+        public static List<Booking> GetBookingsByHotelId(int id)
+        {
+            List<Booking> result = new List<Booking>();
+            command = new SqlCommand("SELECT b.id, b.code, b.customerId, b.roomId, b.occupatedNumber, b.status FROM Booking as b inner join room as r on r.id = b.roomId WHERE r.HotelId = @i", Connection.Instance);
+            command.Parameters.Add(new SqlParameter("@i", id));
+            Connection.Instance.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                Booking b = new Booking()
+                {
+                        Id = reader.GetInt32(0),
+                        Code = reader.GetString(1),
+                        CustomerId = reader.GetInt32(2),
+                        RoomId = reader.GetInt32(3),
+                        OccupatedNumber = reader.GetInt32(4),
+                        Status = (BookingStatus)reader.GetInt32(5),
+                        StatusInvoice = (InvoiceStatus)reader.GetInt32(6)
+
+                };
+                result.Add(b);
+               
+            }
+            reader.Close();
+            command.Dispose();
+            Connection.Instance.Close();
+            return result;
+
+        }
 
         public override string ToString()
         {
@@ -144,15 +173,13 @@ namespace HotelMangement.Classes
 
              
         }
-        public enum BookingStatus
-        {
-            Cancelled,
-            Validated
-        }
-
-         
+   
         
     }
+    public enum BookingStatus
+    {
+        Cancelled,
+        Validated
+    }
 
-     
 }

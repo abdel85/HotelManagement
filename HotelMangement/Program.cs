@@ -144,15 +144,26 @@ namespace HotelMangement
         {
             Console.Clear();
             List<Customer> list = Customer.GetCustomers(hotel.Id);
-            if (list.Count>0)
+            if (list.Count > 0)
             {
-                Console.WriteLine("No custome found");
+                foreach (Customer c in   list)
+                {
+                    Console.WriteLine(c);
+                    Console.WriteLine("---------------");
+                }
             }
+            else
+            {
+               
+                Console.WriteLine("No custome found");
+              
+            }
+           
 
-            CustomersMenu();
+            CustomerMenu();
         }
 
-        public void CustomerMenu()
+        static void CustomerMenu()
         {
             int choice = 4;
             do
@@ -256,12 +267,12 @@ namespace HotelMangement
             #endregion
         }
 
-        static  void Paid(int idCustomer, decimal total, List<Booking> bs)
+        static void Paid(int idCustomer, decimal total, List<Booking> bs)
         {
             Invoice i = new Invoice()
             {    Price =  total,
                 CustomerId = idCustomer,
-                Status = Invoice.InvoiceStatus.notPaid
+                Status = InvoiceStatus.paid
 
             };
 
@@ -307,7 +318,7 @@ namespace HotelMangement
                             CustomerId = c.Id,
                             RoomId = room.Id,
                             OccupatedNumber = (number > room.OccupatedMax) ? room.OccupatedMax : number,
-                            Status = Booking.BookingStatus.Validated
+                            Status = BookingStatus.Validated
                         };
 
                         if (b.Save())

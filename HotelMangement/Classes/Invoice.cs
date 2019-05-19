@@ -38,11 +38,10 @@ namespace HotelMangement.Classes
             return result;
         }
 
-
-        public enum InvoiceStatus
-        {
-            paid,
-            notPaid
-        }
     }
+   public enum InvoiceStatus
+   {
+       paid,
+       notPaid
+   }
 }
