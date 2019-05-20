@@ -56,6 +56,4 @@ namespace HotelMangement.Classes
             return result;
         }
     }
-
-    
 }
