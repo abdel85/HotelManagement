@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+ using System.Text;
+ 
 namespace HotelMangement.Classes
 {
    public class Invoice
@@ -19,7 +17,6 @@ namespace HotelMangement.Classes
         public int Id { get => id; set => id = value; }
         public decimal Price { get => price; set => price = value; }
         public InvoiceStatus Status { get => status; set => status = value; }
-
         public static SqlCommand Command { get => command; set => command = value; }
 
         public bool Save()
@@ -39,6 +36,7 @@ namespace HotelMangement.Classes
         }
 
     }
+
    public enum InvoiceStatus
    {
        paid,

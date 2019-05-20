@@ -239,7 +239,7 @@ namespace HotelMangement
                 }
 
                 List<Booking> bookingUnPaid = Booking.GetBookings(c.Id)
-                .FindAll(x => x.StatusInvoice == Invoice.InvoiceStatus.notPaid);
+                .FindAll(x => x.StatusInvoice == InvoiceStatus.notPaid);
                 decimal total = 0;
                 foreach (Booking b in bookingUnPaid)
                 {
@@ -381,7 +381,7 @@ namespace HotelMangement
                     switch (choice)
                     {
                         case 1:
-                            AddBooking();();
+                            AddBooking();
                             break;
                         case 2:
                             ChangeBookingStatus();
@@ -405,11 +405,11 @@ namespace HotelMangement
             Booking b = new Booking(code);
             if (b.Id > 0)
             {
-                if (b.Status == Booking.BookingStatus.Cancelled)
+                if (b.Status == BookingStatus.Cancelled)
                 {
-                    b.UpdateStatus(Booking.BookingStatus.Cancelled);
+                    b.UpdateStatus(BookingStatus.Cancelled);
                     Room r = new Room(b.RoomId);
-                    r.UpdateStatus(Room.RoomStatus.Free)
+                    r.UpdateStatus(Room.RoomStatus.Free);
 
                 }
 

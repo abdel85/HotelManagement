@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using static HotelMangement.Classes.Invoice;
+using System.Text;
+
 
 namespace HotelMangement.Classes
 {
@@ -31,7 +33,7 @@ namespace HotelMangement.Classes
         }
 
         #region bookin method
-        public Booking(string code)
+        public Booking(string c)
         {
             command = new SqlCommand("SELECT *FROM Booking WHERE Code = @c", Connection.Instance);
             command.Parameters.Add(new SqlParameter("@c", c));
@@ -85,7 +87,7 @@ namespace HotelMangement.Classes
         public bool UpdateStatus(BookingStatus s)
         {
             bool result = false;
-            command = new SqlCommand("UPDATE Booking SET Status =@sWHERE Id = @i", Connection.Instance);
+            command = new SqlCommand("UPDATE Booking SET Status = @s WHERE Id = @i", Connection.Instance);
             command.Parameters.Add(new SqlParameter("@s", s));
             command.Parameters.Add(new SqlParameter("@i", Id));
             Connection.Instance.Open();
@@ -93,6 +95,20 @@ namespace HotelMangement.Classes
             command.Dispose();
             Connection.Instance.Close();
          
+            return result;
+        }
+
+        public bool UpdateStatus(InvoiceStatus s)
+        {
+            bool result = false;
+            command = new SqlCommand("UPDATE Booking SET InvoiceStatus = @s WHERE Id = @i", Connection.Instance);
+            command.Parameters.Add(new SqlParameter("@s", s));
+            command.Parameters.Add(new SqlParameter("@i", Id));
+            Connection.Instance.Open();
+            result = command.ExecuteNonQuery() > 0;
+            command.Dispose();
+            Connection.Instance.Close();
+
             return result;
         }
 
@@ -125,9 +141,6 @@ namespace HotelMangement.Classes
             reader.Close();
             command.Dispose();
             Connection.Instance.Close();
-
-
-
             return result;
         }
 
@@ -160,7 +173,6 @@ namespace HotelMangement.Classes
             command.Dispose();
             Connection.Instance.Close();
             return result;
-
         }
 
         public override string ToString()
@@ -170,11 +182,9 @@ namespace HotelMangement.Classes
             result += "CustomerId : " + CustomerId;
             result += $"paiment status : {StatusInvoice}" ;
             return result;
-
-             
-        }
    
-        
+        }
+    
     }
     public enum BookingStatus
     {
