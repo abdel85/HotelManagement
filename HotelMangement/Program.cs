@@ -286,7 +286,7 @@ namespace HotelMangement
         }
 
 
-        static   void AddBooking()
+        static void AddBooking()
         {
             Console.WriteLine("Customer Phone :");
             string phone = Console.ReadLine();
