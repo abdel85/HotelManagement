@@ -49,6 +49,11 @@
     <Compile Include="Classes\Booking.cs" />
     <Compile Include="Classes\Connection.cs" />
     <Compile Include="Classes\Customer.cs" />
+    <Compile Include="Classes\db.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>db.sql</DependentUpon>
+    </Compile>
     <Compile Include="Classes\Hotel.cs" />
     <Compile Include="Classes\Invoice.cs" />
     <Compile Include="Classes\Room.cs" />
@@ -59,6 +64,14 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Classes\db.sql">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>db.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
